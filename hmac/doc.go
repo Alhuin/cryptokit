@@ -4,6 +4,7 @@
 // What HMAC gives you:
 //   - Integrity: detects tampering
 //   - Authenticity: proves the message was produced by someone with the key
+//
 // What it does NOT give you:
 //   - Confidentiality: the message is not encrypted
 //
