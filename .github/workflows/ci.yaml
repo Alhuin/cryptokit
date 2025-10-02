@@ -31,11 +31,21 @@ jobs:
           go install honnef.co/go/tools/cmd/staticcheck@latest
           go install github.com/securego/gosec/v2/cmd/gosec@latest
 
-      - name: Run
+      - name: gofumpt
         run: |
-          output=$(gofumpt -l .); if [ -n "$output" ]; then
-            echo "gofumpt found unformatted files:"; echo "$output"; exit 1; fi
-          go vet ./...
-          go test ./... -race -count=1
-          staticcheck ./...
-          gosec -quiet ./...
+          output=$(gofumpt -l .)
+          if [ -n "$output" ]; then
+            echo "gofumpt found unformatted files:"; echo "$output"; exit 1
+          fi
+
+      - name: go vet
+        run: go vet ./...
+
+      - name: go test (race)
+        run: go test ./... -race -count=1
+
+      - name: staticcheck
+        run: staticcheck ./...
+
+      - name: gosec
+        run: gosec -quiet ./...
