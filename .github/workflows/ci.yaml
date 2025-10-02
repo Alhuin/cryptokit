@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.x'
+          check-latest: true
+
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Install tools (gofumpt, staticcheck, gosec)
+        run: |
+          go install mvdan.cc/gofumpt@latest
+          go install honnef.co/go/tools/cmd/staticcheck@latest
+          go install github.com/securego/gosec/v2/cmd/gosec@latest
+
+      - name: Task (optional local dev helper)
+        run: |
+          sudo sh -c 'curl -sL https://taskfile.dev/install.sh | sh' || true
+          echo "::notice::Task installed for convenience (workflow uses scripts via Taskfile)."
+
+      - name: Run CI tasks
+        run: |
+          task --version || true
+          # Use Taskfile if present; otherwise run the equivalent shell fallbacks.
+          if command -v task >/dev/null 2>&1; then
+            task ci
+          else
+            echo "Task not found; running fallback commands"
+            output=$(gofumpt -l .); if [ -n "$output" ]; then
+              echo "gofumpt found unformatted files:"; echo "$output"; exit 1; fi
+            go vet ./...
+            go test ./... -race -count=1
+            staticcheck ./...
+            gosec -quiet ./...
+          fi
+
+      - name: Upload test results (if any)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-cache
+          path: |
+            **/coverage.out
+            **/TEST-*.xml
+          if-no-files-found: ignore
+

@@ -1,0 +1,38 @@
+version: "3"
+
+tasks:
+  fmt:fix:
+    desc: Format code with gofumpt (destructive)
+    cmds:
+      - gofumpt -w .
+
+  fmt:check:
+    desc: Check gofumpt formatting (CI-safe)
+    cmds:
+      - |
+        output=$(gofumpt -l .)
+        if [ -n "$output" ]; then
+          echo "gofumpt found unformatted files:"
+          echo "$output"
+          exit 1
+        fi
+
+  vet:
+    desc: go vet
+    cmds: [ "go vet ./..." ]
+
+  test:
+    desc: go test with race detector
+    cmds: [ "go test ./... -race -count=1" ]
+
+  staticcheck:
+    desc: staticcheck
+    cmds: [ "staticcheck ./..." ]
+
+  gosec:
+    desc: gosec (quiet)
+    cmds: [ "gosec -quiet ./..." ]
+
+  ci:
+    desc: Run CI suite
+    deps: [ fmt:check, vet, test, staticcheck, gosec ]
