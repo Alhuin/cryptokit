@@ -38,27 +38,14 @@ jobs:
           go install honnef.co/go/tools/cmd/staticcheck@latest
           go install github.com/securego/gosec/v2/cmd/gosec@latest
 
-      - name: Task (optional local dev helper)
-        run: |
-          sudo sh -c 'curl -sL https://taskfile.dev/install.sh | sh' || true
-          echo "::notice::Task installed for convenience (workflow uses scripts via Taskfile)."
-
       - name: Run CI tasks
         run: |
-          task --version || true
-          # Use Taskfile if present; otherwise run the equivalent shell fallbacks.
-          if command -v task >/dev/null 2>&1; then
-            task ci
-          else
-            echo "Task not found; running fallback commands"
-            output=$(gofumpt -l .); if [ -n "$output" ]; then
-              echo "gofumpt found unformatted files:"; echo "$output"; exit 1; fi
-            go vet ./...
-            go test ./... -race -count=1
-            staticcheck ./...
-            gosec -quiet ./...
-          fi
-
+          output=$(gofumpt -l .); if [ -n "$output" ]; then
+            echo "gofumpt found unformatted files:"; echo "$output"; exit 1; fi
+          go vet ./...
+          go test ./... -race -count=1
+          staticcheck ./...
+          gosec -quiet ./...
       - name: Upload test results (if any)
         if: always()
         uses: actions/upload-artifact@v4

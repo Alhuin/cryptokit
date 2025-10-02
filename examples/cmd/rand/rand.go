@@ -25,7 +25,7 @@ func main() {
 		os.Exit(2)
 	}
 
-	if *b64 == false && *hex == false {
+	if !*b64 && !*hex {
 		*hex = true
 	}
 
