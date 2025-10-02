@@ -46,13 +46,3 @@ jobs:
           go test ./... -race -count=1
           staticcheck ./...
           gosec -quiet ./...
-      - name: Upload test results (if any)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-cache
-          path: |
-            **/coverage.out
-            **/TEST-*.xml
-          if-no-files-found: ignore
-
