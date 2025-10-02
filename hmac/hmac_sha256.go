@@ -1,7 +1,7 @@
 package hmac
 
 import (
-	"crypto/hmac"
+	chmac "crypto/hmac"
 	"crypto/sha256"
 	"errors"
 )
@@ -12,7 +12,7 @@ func ComputeHMACSHA256(key []byte, payload []byte) ([]byte, error) {
 		return nil, errors.New("empty key")
 	}
 
-	mac := hmac.New(sha256.New, key)
+	mac := chmac.New(sha256.New, key)
 	mac.Write(payload)
 	tag := mac.Sum(nil)
 
@@ -26,5 +26,5 @@ func VerifyHMACSHA256(key []byte, payload []byte, signature []byte) (ok bool, er
 		return false, err
 	}
 
-	return hmac.Equal(b, signature), nil
+	return chmac.Equal(b, signature), nil
 }

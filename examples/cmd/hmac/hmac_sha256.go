@@ -17,10 +17,6 @@ func loadKey(keyFlag *string, keyFileFlag *string) ([]byte, error) {
 		return nil, fmt.Errorf("both -k and -keyfile are set")
 	}
 
-	if *keyFlag == "" && *keyFileFlag == "" {
-		return nil, fmt.Errorf("no key or keyfile provided")
-	}
-
 	// Key from flag.
 	if *keyFlag != "" {
 		return []byte(*keyFlag), nil
@@ -34,6 +30,8 @@ func loadKey(keyFlag *string, keyFileFlag *string) ([]byte, error) {
 		}
 		return []byte(strings.TrimRight(string(b), "\r\n")), nil
 	}
+
+	return nil, fmt.Errorf("no key or keyfile provided")
 }
 
 func readInput(inputPathFlag *string) ([]byte, error) {

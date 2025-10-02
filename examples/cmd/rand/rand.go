@@ -11,7 +11,7 @@ import (
 
 func main() {
 	n := flag.Int("n", 16, "number of random bytes")
-	raw := flag.Bool("raw", false, "output as base64")
+	b64 := flag.Bool("b64", false, "output as base64")
 	hex := flag.Bool("hex", false, "output hex tag")
 	flag.Parse()
 
@@ -20,12 +20,12 @@ func main() {
 		os.Exit(2)
 	}
 
-	if *raw && *hex {
-		fmt.Fprintln(os.Stderr, "cannot provide both -raw and -hex output")
+	if *b64 && *hex {
+		fmt.Fprintln(os.Stderr, "cannot provide both -b64 and -hex output")
 		os.Exit(2)
 	}
 
-	if *raw == false && *hex == false {
+	if *b64 == false && *hex == false {
 		*hex = true
 	}
 
@@ -40,7 +40,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	if *raw {
+	if *b64 {
 		// nil reader uses rand.Reader.
 		b, err := rand.Bytes(*n, nil)
 		if err != nil {
