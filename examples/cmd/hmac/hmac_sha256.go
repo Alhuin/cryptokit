@@ -1,13 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"encoding/hex"
 	"errors"
 	"flag"
 	"fmt"
 	"io"
 	"os"
-	"strings"
 
 	"github.com/Alhuin/cryptokit/hmac"
 )
@@ -28,7 +28,7 @@ func loadKey(keyFlag, keyFileFlag *string) ([]byte, error) {
 		if err != nil {
 			return nil, fmt.Errorf("reading key file: %w", err)
 		}
-		return []byte(strings.TrimRight(string(b), "\r\n")), nil
+		return bytes.TrimRight(b, "\r\n"), nil
 	}
 
 	return nil, fmt.Errorf("no key or keyfile provided")

@@ -39,18 +39,13 @@ linters:
     - exhaustive
   exclusions:
     rules:
-      - linters: [revive]
-        path: "^example/cmd"
+      - path: "^examples/cmd"
+        linters: [revive]
         text: "should have a package comment"
     paths:
       - vendor/
       - .git/
       - .github/
   settings:
-    revive:
-      severity: warning
-    gosec:
-      severity: medium
-      excludes: [G115]
     misspell:
       locale: US
