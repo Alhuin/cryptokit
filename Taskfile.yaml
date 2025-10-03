@@ -1,38 +1,30 @@
 version: "3"
 
+vars:
+  GCL_VER: v2.5.0
+
 tasks:
-  fmt:fix:
-    desc: Format code with gofumpt (destructive)
+  fmt:
+    desc: Format with golangci-lint
     cmds:
-      - gofumpt -w .
+      - go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@{{.GCL_VER}} fmt
 
-  fmt:check:
-    desc: Check gofumpt formatting (CI-safe)
+  lint:
+    desc: Lint with golangci-lint
     cmds:
-      - |
-        output=$(gofumpt -l .)
-        if [ -n "$output" ]; then
-          echo "gofumpt found unformatted files:"
-          echo "$output"
-          exit 1
-        fi
+      - go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@{{.GCL_VER}} run --timeout=3m
 
-  vet:
-    desc: go vet
-    cmds: [ "go vet ./..." ]
+  lint:fix:
+    desc: Lint fix + Format
+    cmds:
+      - go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@{{.GCL_VER}} run --timeout=3m --fix
+      - go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@{{.GCL_VER}} fmt
 
   test:
-    desc: go test with race detector
-    cmds: [ "go test ./... -race -count=1" ]
-
-  staticcheck:
-    desc: staticcheck
-    cmds: [ "staticcheck ./..." ]
-
-  gosec:
-    desc: gosec (quiet)
-    cmds: [ "gosec -quiet ./..." ]
+    desc: Run tests
+    cmds:
+      - go test ./... -race -count=1
 
   ci:
-    desc: Run CI suite
-    deps: [ fmt:check, vet, test, staticcheck, gosec ]
+    desc: Full CI suite (lint + tests)
+    deps: [ lint, test ]

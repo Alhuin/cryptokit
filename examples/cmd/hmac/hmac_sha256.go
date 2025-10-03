@@ -12,7 +12,7 @@ import (
 	"github.com/Alhuin/cryptokit/hmac"
 )
 
-func loadKey(keyFlag *string, keyFileFlag *string) ([]byte, error) {
+func loadKey(keyFlag, keyFileFlag *string) ([]byte, error) {
 	if *keyFlag != "" && *keyFileFlag != "" {
 		return nil, fmt.Errorf("both -k and -keyfile are set")
 	}

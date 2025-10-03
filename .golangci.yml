@@ -1,0 +1,56 @@
+version: "2"
+
+run:
+  timeout: 3m
+  tests: true
+  go: "1.24"
+
+formatters:
+  enable:
+    - gofumpt
+    - gci
+  settings:
+    gofumpt:
+      module-path: github.com/Alhuin/cryptokit
+      extra-rules: true
+    gci:
+      sections: [ standard, default, prefix(github.com/Alhuin/cryptokit) ]
+      custom-order: true
+  exclusions:
+    paths:
+      - vendor/
+      - .git/
+      - .github/
+
+linters:
+  enable:
+    - govet
+    - staticcheck
+    - errcheck
+    - ineffassign
+    - revive
+    - gosec
+    - misspell
+    - nolintlint
+    - copyloopvar
+    - errorlint
+    - errname
+    - errchkjson
+    - exhaustive
+  exclusions:
+    rules:
+      - linters: [revive]
+        path: "^example/cmd"
+        text: "should have a package comment"
+    paths:
+      - vendor/
+      - .git/
+      - .github/
+  settings:
+    revive:
+      severity: warning
+    gosec:
+      severity: medium
+      excludes: [G115]
+    misspell:
+      locale: US

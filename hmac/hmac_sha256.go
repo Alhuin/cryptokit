@@ -7,7 +7,7 @@ import (
 )
 
 // ComputeHMACSHA256 returns the HMAC-SHA256 tag for payload using key.
-func ComputeHMACSHA256(key []byte, payload []byte) ([]byte, error) {
+func ComputeHMACSHA256(key, payload []byte) ([]byte, error) {
 	if len(key) == 0 {
 		return nil, errors.New("empty key")
 	}
@@ -20,7 +20,7 @@ func ComputeHMACSHA256(key []byte, payload []byte) ([]byte, error) {
 }
 
 // VerifyHMACSHA256 reports whether signature equals the HMAC-SHA256 of payload with key.
-func VerifyHMACSHA256(key []byte, payload []byte, signature []byte) (ok bool, err error) {
+func VerifyHMACSHA256(key, payload, signature []byte) (ok bool, err error) {
 	b, err := ComputeHMACSHA256(key, payload)
 	if err != nil {
 		return false, err
