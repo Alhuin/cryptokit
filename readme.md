@@ -22,10 +22,14 @@ git clone https://github.com/Alhuin/cryptokit.git
 cd cryptokit
 ```
 
-## Run tests
-
+## Tests & lint
+[![CI](https://github.com/Alhuin/cryptokit/actions/workflows/ci.yaml/badge.svg)](https://github.com/Alhuin/cryptokit/actions/workflows/ci.yaml)
 ```bash
-go test ./... -v
+task test
+task lint
+task lint:fix
+task fmt
+task ci
 ```
 
 ## Requirements
