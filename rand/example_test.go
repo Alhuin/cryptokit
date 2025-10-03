@@ -11,7 +11,8 @@ func ExampleHex() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("len=%d\n", len(h)) // Output: len=32
+	fmt.Printf("len=%d\n", len(h))
+	// Output: len=32
 }
 
 func ExampleBytes() {
@@ -19,5 +20,6 @@ func ExampleBytes() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("n=%d\n", len(b)) // Output: n=16
+	fmt.Printf("n=%d\n", len(b))
+	// Output: n=16
 }
